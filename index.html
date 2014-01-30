@@ -1,0 +1,437 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Eesti autoturu ülevaade</title>
+	
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://code.highcharts.com/highcharts.js"></script>
+
+	<script src="wizard.js"></script>
+	<script src="averages.js"></script>
+	<script src="auto24parser.js"></script>
+	<script>
+		$(function(){
+			var states = {
+				FORM:"FORM",
+				BUSY:"BUSY",
+				RESULTS:"RESULTS"
+			};
+			
+			//main container
+			var $el = $("#auto24graph");
+
+			$el.find("button.startUrl").click(analyzeUrl);
+			$el.find("button.startModel").click(analyzeModel);
+			$el.find("button.restart").click(restart);
+			$(window).on('hashchange', initApp);
+			
+			initCharts();
+			initApp();
+						
+			var auto24url;
+			
+			function initApp() {
+				var make, makeId, model;
+				
+				if (location.hash) {
+					make = location.hash.substring(1, location.hash.indexOf("/"));
+					makeId = $el.find(".form select option:contains("+make+")").val();
+					model = location.hash.substring(location.hash.indexOf("/")+1);
+				}
+					
+				reset();
+				if (makeId && model) {
+					//start search
+					var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0";
+					loadUrl(url, model);
+				} else {
+					//reset to form
+					setState(states.FORM);
+					updateLastSearch();
+				}
+			}
+			
+			function restart() {
+				location.hash = "";
+			}
+			
+			function reset() {
+			 	Averages.reset();
+				
+				$el.find('.chart').each(function(){
+					var chart = $(this).highcharts();
+					chart.setTitle({text:""});
+					
+					for (var i=0; i < chart.series.length; i++) {
+						chart.series[i].setData([]);
+					};
+				});
+			}				
+			
+			function analyzeUrl(){
+				reset();
+				var url = $el.find(".form input.url").val();
+				loadUrl(url, "");
+			}
+			
+			function analyzeModel(){
+				reset();
+
+				var make = $el.find(".form select option:selected").text();
+				var model = $el.find(".form input.model").val();
+				
+				addLastSearch(make, model);
+				
+				//forses initApp call
+				location.hash = "#"+make+"/"+model;
+			}
+			
+			function setState(state) {
+				$el.attr("class", state);
+			}
+			
+			function updateLastSearch() {
+				var $last = $el.find(".lastSearched").hide();
+				$last.find("a").remove();
+				
+				var list = getCookie("last").split("&");
+				list.forEach(function(item) {
+					if (item) {
+						$last.show().append("<a href='#"+item+"'>"+item.replace("/"," ")+"</a>");
+					}
+				});
+			}
+			
+			function addLastSearch(make,  model) {
+				//not used already
+				var list = getCookie("last");
+				
+				if (list.indexOf(make+"/"+model) > -1) return;
+				
+				if(list.split("&").length >= 5) {
+					list = list.substring(0, list.lastIndexOf("&"));
+				}
+				setCookie("last", make+"/"+model+"&"+list);
+			}
+			
+			function setCookie(key, value) {
+	            var expires = new Date();
+	            expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+	            document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+	        }
+
+	        function getCookie(key) {
+	            var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+	            return keyValue ? keyValue[2] : "";
+	        }
+			
+			function loadUrl(url, model) {
+				console.log("Loading auto24 url", url);
+				if (url.indexOf("www.auto24.ee/kasutatud/nimekiri.php") == -1) {
+					return alert( "url isn't www.auto24.ee/kasutatud/nimekiri.php...");
+				}
+				
+				auto24url = url;
+				
+				setState(states.BUSY);
+				
+				//console.log("http://whateverorigin.org:"+url);
+				//$.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data){
+				//	onResultHtmlLoaded(data.contents, url, model);
+				//});
+				//console.log('http://anyorigin.com/get/?url=' + escape(url) + '&callback=?');
+				//$.getJSON('http://anyorigin.com/get/?url=' + escape(url) + '&callback=?', function(data){
+				//	onResultHtmlLoaded(data.contents, url, model);
+				//});
+				
+				var x = new XMLHttpRequest();
+				x.open('GET', "http://cors-anywhere.herokuapp.com/" + url);
+				x.onload = function() {
+					onResultHtmlLoaded(x.responseText, url, model);
+				}
+				x.send();
+			}
+			
+			function onResultHtmlLoaded(html, url, model) {
+				console.log("got html..");
+				
+				var results = Auto24Parser.getResults(html);
+				if (!results) return restart();
+
+				var car = Auto24Parser.getResultTitle(html)+" "+model;
+				
+				Averages.update(results);
+
+				Wizard.setResults(results, car);
+				
+				//update charts
+				var priceChart = $('.priceByYear').highcharts();
+				displayResults(priceChart, results, "price");
+				priceChart.setTitle({text: "Kasutatud "+car+ " hind auto registreerimise aasta kohta"});
+
+				var odoChart = $('.odoByYear').highcharts();
+				displayResults(odoChart, results, "odo");
+				odoChart.setTitle({text: "Kasutatud "+car+ " läbisõit auto registreerimise aasta kohta"});
+				
+				//handle paging
+				handlePaging(html, url, model);
+			}
+			
+			function handlePaging(html, url, model) {
+				var rangeInfo = Auto24Parser.getRangeInfo(html);
+				if (rangeInfo.end < rangeInfo.total) {
+					url += "&ak="+rangeInfo.end;
+					loadUrl(url, model);
+				} else {
+					setState(states.RESULTS);
+				}
+			}
+			
+
+			function displayResults(chart, results, field) {
+				console.log("displaying results ", results.length);
+				
+				//points graph
+				var series = chart.series[0];
+				for(var i=0; i < results.length; i++) {
+					var result = results[i];
+					var point = {
+						x: result.year,
+						y: result[field],
+						result: result
+					};
+					series.addPoint(point, false);
+				}
+				
+				//averages graph
+				var avgSeries = chart.series[1];
+				avgSeries.setData(Averages.getAverages(field));
+				
+				chart.redraw()
+			}
+			
+			function initCharts() {
+				$el.find('.priceByYear').highcharts({
+					chart: {},
+					xAxis: {
+						title: {
+							text: 'auto registreerimise aasta'
+						},
+						labels: {
+							format: '{value}'
+						},
+						tickInterval: 1,
+						reversed: true,
+					},
+					yAxis: {
+						min: 0,
+						title: {
+							text: 'hind'
+						},
+						labels: {
+							format: '{value:,.0f} €'
+						}
+					},
+					title: {
+						text: ''
+					},
+					series: [{
+						type: 'scatter',
+						name: 'hind',
+						data: [],
+						marker: {
+							radius: 4
+						}
+					},{
+						type: 'line',
+						name: 'Keskmine hind',
+						marker: {
+							radius: 10
+						},
+						data: [],
+					}],
+					tooltip: {
+						useHTML: true,
+						hideDelay: 1500,
+						formatter: function() {
+							if (this.point.result) {
+								return resultTooltip(this.point.result);
+							} else {
+								return 'Aasta ' + this.point.x + ' autode(' + this.point.count + 'tk)<br /> keskmine hind: <b>' + Highcharts.numberFormat(this.point.y,0,0," ") + '€</b>';
+							}
+						}
+					},
+					//prevent tooltip moving with mouse
+					plotOptions: { 
+						scatter:{ tooltip:{ followPointer: false }},
+						series:{ cursor: 'pointer', point: { events: {click: resultClick}}}
+					}
+				});
+				
+				$el.find('.odoByYear').highcharts({
+					chart: {},
+					xAxis: {
+						title: {
+							text: 'aasta'
+						},
+						labels: {
+							format: '{value}'
+						},
+						tickInterval: 1,
+						reversed: true,
+					},
+					yAxis: {
+						min: 0,
+						title: {
+							text: 'läbisõit'
+						},
+						labels: {
+							format: '{value:,.0f} km'
+						}
+					},
+					title: {
+						text: ''
+					},
+					series: [{
+						type: 'scatter',
+						name: 'odometer',
+						data: [],
+						marker: {
+							radius: 4
+						}
+					},{
+						type: 'line',
+						name: 'Keskmine läbisõit',
+						marker: {
+							radius: 10
+						},
+						data: [],
+					}],
+					tooltip: {
+						useHTML: true,
+						hideDelay: 1500,
+						formatter: function() {
+							if (this.point.result) {
+								return resultTooltip(this.point.result);
+							} else {
+								return 'Aasta ' + this.point.x + ' autode(' + this.point.count + 'tk)<br /> keskmine läbisõit: <b>' + Highcharts.numberFormat(this.point.y,0,0," ") + 'km</b>';
+							}
+						}
+					},
+					//prevent tooltip moving with mouse
+					plotOptions: { 
+						scatter:{ tooltip:{ followPointer: false }},
+						series:{ cursor: 'pointer', point: { events: {click: resultClick}}}
+					}
+				});
+				
+				function resultClick() {
+					if (this.result) { 
+						//point
+						window.open(this.result.url, "_blank");
+					} else {
+						//average
+						var url = auto24url + "&f1=" + this.x + "&f2=" + this.x + "&ak=0";
+						window.open(url, "_blank");
+					}
+				};
+				
+				//console.log(r.odo+", "+r.year+", "+r.price+", "+r.name);
+				function resultTooltip(result) {
+					var tooltip = '<b><a href="' + result.url + '" target="_blank" style="max-width: 200px;">'+result.name+"</a></b><br />" +
+					(result.img ? '<img src="' + result.img + '" style="width:74px;height:56px;border:1px solid"/><br />': "") +
+					'Läbisõit: ' + Highcharts.numberFormat(result.odo,0,0," ") + 'km<br />' +
+					'Aasta: ' + result.year + '<br />' +
+					'Hind: ' + Highcharts.numberFormat(result.price,0,0," ") + '€<br />';
+					
+					return tooltip;
+				}
+			}
+		})
+	</script>
+</head>
+<body>
+	<div id="auto24graph">
+		<div class="form">
+			<h1 style="margin-bottom:0px">Eesti autoturu ülevaade</h1>
+			<p style="margin-top:0px">(auto24.ee andmete põhjal)</p>
+			<br />
+			<div class="byModel">
+				<div>
+					Vali auto mark
+					<select>
+						<option value="9">Alfa Romeo</option><option value="149">Aston Martin</option><option value="2">Audi</option><option value="4">BMW</option><option value="31">Chevrolet</option><option value="28">Chrysler</option><option value="20">Citroen</option><option value="254">Dacia</option><option value="68">Daewoo</option><option value="14">Fiat</option><option value="7" selected>Ford</option><option value="1">Honda</option><option value="193">Hummer</option><option value="34">Hyundai</option><option value="36">Jaguar</option><option value="32">Jeep</option><option value="25">Kia</option><option value="18">Lada</option><option value="37">Lancia</option><option value="42">Land Rover</option><option value="35">Lexus</option><option value="6">Mazda</option><option value="12">Mercedes-Benz</option><option value="144">MINI</option><option value="3">Mitsubishi</option><option value="11">Nissan</option><option value="5">Opel</option><option value="16">Peugeot</option><option value="140">Porsche</option><option value="19">Renault</option><option value="17">Saab</option><option value="22">SEAT</option><option value="40">Skoda</option><option value="102">Smart</option><option value="23">Subaru</option><option value="41">Suzuki</option><option value="13">Toyota</option><option value="8">Volkswagen</option><option value="10">Volvo</option>
+					</select>
+				</div>
+				<div>
+					ja kirjuta mudel
+					<input class="model" size="15" value="" placeholder="Mondeo näiteks" style="width:120px;">
+				</div>
+				<div>
+					<button class="startModel" type="submit">start</button>
+				</div>
+			</div>
+			<div class="lastSearched">
+				<p style="margin-bottom: 10px;">Sinu eelmised päringud:</p>			
+			</div>
+			
+			<div style="text-align:left; padding: 20px;">
+<p>
+Auto omamise suurim kulu on tegelikult auto väärtuse langus. Kahe aastaga võib auto ostu ja müügi hind kukkuda kümneid tuhandeid eurosid!
+</p>
+<p>Selle lehekülje eesmärk on näidata millal auto hind kukub kiiresti, millal aga stabiliseerub. Õigel ajal auto ostest saad müües praktiliselt sama raha tagasi küsida.</p>
+
+<p>
+	<h4>Näiteks:</h4>
+	Plaanid osta umbes 2 aastat vana maasturi ning sõita sellega 4 aastat. Valikusse on jäänud kaks autot:
+</p>
+<p>
+	<b>VW Touraeg</b> hind oleks <b>ostes 44 tuhat </b>eurot ja 4 aasta pärast <b>müües 16 tuhat </b>eurot (6 aastase auto keskmine hind auto24.ee andmetel).
+</p>
+<p>
+	<b>Honda CRV</b> aga hoiab väärtust hästi - 2 aastat vana auto <b>ostes maksad 19 tuhat</b> eurot ja <b>müües saad 12 tuhat</b> eurot tagasi!
+</p>
+
+<p>
+Võrdle hindasid:
+<ul>
+<li>
+<a href="#Volkswagen/touareg">Volkswagen touareg</a> 44k -> 16k
+</li>
+<li>
+<a href="#Honda/crv">Honda CRV</a> 19k -> 12k
+</li>
+</ul>
+</p>
+			</div>
+			<!--
+			<p style="margin: 30px">või</p>
+			<div>
+				<a href="http://www.auto24.ee/" target="_blank">tee auto24.ee otsing</a> ja sisesta tulemuse lehe url siia 
+				<br />
+				<input class="url" size="50" value="http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b=8&bw=4&f1=2000&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0" 
+				/><button class="startUrl">start</button>
+			</div>
+			-->
+		</div>
+		
+		
+		<div class="progress">
+			<img src="loadingAnimation.gif" style="margin:10px">
+		</div>
+		
+		
+		<div class="results">
+			<button class="restart">&lt; alusta uuesti</button>
+
+			<div class="wizard">
+				Kui ostad täna <span class="car"></span>, mis on toodetud aastal <input class="regYears" size="4" value="2010" /> ja kasutad seda <input class="useYears" size="2" value="4" /> aastat, <br />
+				on sul kohe vaja <span class="buyPrice">?</span>€ ja <span class="keepYears">4</span> aasta pärast müües saad <span class="sellPrice">?</span>€ tagasi (<span class="keptPercentage"></span>% algsummast, hinnalangus <span class="devalueMonth"></span>€ kuus).
+			</div>
+			<div class="chart priceByYear"></div>
+			<div class="chart odoByYear"></div>
+		</div>
+	</div>
+</body>
+</html>
