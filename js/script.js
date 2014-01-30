@@ -8,17 +8,18 @@ $(function(){
 	//main container
 	var $el = $("#auto24graph");
 
-	$el.find("button.startUrl").click(analyzeUrl);
-	$el.find("button.startModel").click(analyzeModel);
+
+	//$el.find("form button").click(analyzeUrl);
+	$el.find("form button").click(analyzeModel);
 	$el.find("button.restart").click(restart);
-	$(window).on('hashchange', initApp);
+	$(window).on('hashchange', init);
 	
 	initCharts();
-	initApp();
+	init();
 				
 	var auto24url;
 	
-	function initApp() {
+	function init() {
 		var make, makeId, model;
 		
 		if (location.hash) {
@@ -56,22 +57,28 @@ $(function(){
 		});
 	}				
 	
+	/*
 	function analyzeUrl(){
 		reset();
 		var url = $el.find(".form input.url").val();
 		loadUrl(url, "");
 	}
+	*/
 	
 	function analyzeModel(){
 		reset();
+		
+		debugger;
 
-		var make = $el.find(".form select option:selected").text();
-		var model = $el.find(".form input.model").val();
+		var make = $el.find("form select.make option:selected").text();
+		var model = $el.find("form input.model").val();
 		
-		addLastSearch(make, model);
-		
-		//forses initApp call
-		location.hash = "#"+make+"/"+model;
+		if (make && model) {
+			addLastSearch(make, model);
+			
+			//which saves history and also triggers init()
+			location.hash = "#"+make+"/"+model;
+		}
 	}
 	
 	function setState(state) {
@@ -79,13 +86,13 @@ $(function(){
 	}
 	
 	function updateLastSearch() {
-		var $last = $el.find(".lastSearched").hide();
-		$last.find("a").remove();
+		var $lastDiv = $el.find(".lastSearched").hide();
+		$lastDiv.find("li").remove();
 		
 		var list = getCookie("last").split("&");
 		list.forEach(function(item) {
 			if (item) {
-				$last.show().append("<a href='#"+item+"'>"+item.replace("/"," ")+"</a>");
+				$lastDiv.show().append("<li><a href='#"+item+"'>"+item.replace("/"," ")+"</a></li>");
 			}
 		});
 	}
