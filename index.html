@@ -15,6 +15,7 @@
 	<script src="js/wizard.js"></script>
 	<script src="js/averages.js"></script>
 	<script src="js/auto24parser.js"></script>
+	<script src="js/charts.js"></script>
 	<script src="js/script.js"></script>
 </head>
 <body id="auto24graph">
@@ -75,32 +76,35 @@
 			</div>
 			
 			<div class="description col-xs-12 col-md-9">
-				<div class="page-header">
-					<h1 style="margin-bottom:0px">Minu auto hind mõne aasta pärast? <br>
-					<small>koostatud auto24.ee andmete põhjal</small></h1>
-				</div>
-				<p>Auto omamise suurim kulu ei ole kütus või talvekummid vaid auto hinna langus. Kahe aastaga võib auto ostu ja müügi hind kukkuda kümneid tuhandeid eurosid!</p>
+				<h1 style="margin-bottom:30px; margin-top:50px;">Minu auto hind mõne aasta pärast? <br>
+					<small>koostatud auto24.ee andmete põhjal</small>
+				</h1>
+				<p>Auto omamise suurim kulu ei ole kütus või remont vaid auto vananedes hinna langus. Kahe aastaga võib uue auto hind kukkuda kümneid tuhandeid eurosid!</p>
 				<p>Selle lehekülje eesmärk on näidata millal auto hind kukub kiiresti, millal aga stabiliseerub. Õigel ajal auto ostest saad müües praktiliselt sama raha tagasi küsida.</p>
 
-				<hr>
-				<h3>Näide</h3>
-				<p>Plaanid osta 2 aastat vana maasturi ning sõita sellega järgmised 4 aastat. Valikusse on jäänud kaks autot:</p>
-				<h4>VW Touraeg või Honda CRV</h4>
+				<hr style="margin: 30px 0px;">
+				<h2>Näide: VW Touraeg või Honda CRV?</h2>
 				<p>
-					2012 aasta <b>VW Touraeg</b> maksab <b>44 tuhat</b> eurot ja 4 aasta pärast müües on keskmine hind <b>16 tuhat </b>eurot.<br>
+					Tahad osta 3 aastat vana kasutatud maasturi ning sõita sellega järgmised 4 aastat. <br>
+					Valikusse on jäänud kaks autot: VW Touraeg ja Honda CRV.</p>
+				<br />
+				
+				<p>Kasutades turu ülevaadet näed, et...</p>
+				<p>
+					<b>VW Touraeg</b> (2011 aasta auto) maksab <b>44 tuhat</b> eurot ja 4 aasta pärast müües on keskmine hind <b>16 tuhat </b>eurot.<br>
 				</p>
 				<p>
-					2012 aasta <b>Honda CRV</b> ostes maksad <b>19 tuhat</b> eurot ja müües saad <b>12 tuhat</b> eurot tagasi!
+					<b>Honda CRV</b> (2011 aasta auto) ostes maksad <b>19 tuhat </b> eurot ja müües saaksid umbes <b>12 tuhat</b> eurot tagasi!
 				</p>
-				<div class="well well-lg">
+				<div class="well well-lg" style="margin: 30px 0px;">
 					Honda CRV hoiab väärtust hästi, VW Touraegi hind turul aga langeb 4 aastaga üle 20 tuhande euro!
 				</div>
 				<hr>
 				
 				<h4>Näites kasutatud autode päringud:</h4>
 				<ul>
-					<li><a href="#Volkswagen/touareg">Volkswagen touareg</a></li>
-					<li><a href="#Honda/crv">Honda CRV</a></li>
+					<li><a href="#Volkswagen/Touareg">Volkswagen Touareg</a></li>
+					<li><a href="#Honda/CRV">Honda CRV</a></li>
 				</ul>
 			</div>
 			
@@ -121,11 +125,16 @@
 			</div>
 			
 			<div class="results col-xs-12 col-md-12">
-				<div class="wizard">
+				<h1></h1>
+				
+				<div class="wizard well well-lg">
 					Kui ostad täna <span class="car"></span>, mis on toodetud aastal <input class="regYears" size="4" value="2010" /> ja kasutad seda <input class="useYears" size="2" value="4" /> aastat, <br />
-					on sul kohe vaja <span class="buyPrice">?</span>€ ja <span class="keepYears">4</span> aasta pärast müües saad <span class="sellPrice">?</span>€ tagasi (<span class="keptPercentage"></span>% algsummast, hinnalangus <span class="devalueMonth"></span>€ kuus).
+					on sul kohe vaja <span class="buyPrice">?</span>€ ja <span class="keepYears">4</span> aasta pärast müües saad <span class="sellPrice">?</span>€ tagasi. <br />
+					(<span class="keptPercentage"></span>% algsummast, hinnalangus <span class="devalueMonth"></span>€ kuus)
 				</div>
+				<h2 class="price"></h2>
 				<div class="chart priceByYear"></div>
+				<h2 class="odo"></h2>
 				<div class="chart odoByYear"></div>
 			</div>
 		</div>

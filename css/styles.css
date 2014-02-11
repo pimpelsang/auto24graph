@@ -14,11 +14,22 @@
 	display: none;
 }
 
+#auto24graph {
+	background-color: #FEFEFE;
+}
+
 #auto24graph:not(.FORM) .form {
 	position: absolute;
 	top: 10px;
 	left: 10px;
-	max-width: 300px;
+	max-width: 250px;
+	z-index: 2;
+	
+	opacity: 0.5;
+	transition: opacity .3s;
+}
+#auto24graph:not(.FORM) .form:hover {
+	opacity: 1;
 }
 
 #auto24graph .header {
@@ -29,40 +40,43 @@
 	background-size: cover;
 	background-position:center; 
 }
+#auto24graph .progress {
+}
 
 #auto24graph .results {
 	visibility: hidden;
+	border: 1px solid #DDD;
+	background-color: #FFF;
+	margin: 5px;
+	padding: 50px 80px;
+}
+
+#auto24graph .results H2 {
+	margin-top: 80px;
+	margin-bottom: 30px;
 }
 
 #auto24graph .results .chart {
-	margin: 10px;
-	padding: 10px;
+	margin: 0px;
+	padding: 0px;
 	margin-bottom: 50px;
 	height: 600px;
-	box-shadow: 3px 3px 5px #888888;
-}
-button.restart {
-	height: 30px;
-	background-color: gray;
-	color: white;
-}
-#auto24graph .wizard {
-	margin: 50px 150px;
-	text-align: center;
-	padding: 30px;
-	line-height: 3;
-	font-size: 18px;
-	background: white;
-	box-shadow: 3px 3px 5px #888888;
+	-box-shadow: 3px 3px 5px #888888;
 }
 
-#auto24graph .wizard > input {
-	background-color: #CCC;
+#auto24graph .results .wizard {
+	text-align: center;
+	line-height: 3;
+	font-size: 20px;
+}
+
+#auto24graph .results .wizard > input {
+	background-color: transparent;
 	font-weight: bold;
 	font-size: 20px;
 	text-align: center;
 }
 
-#auto24graph .wizard > span {
+#auto24graph .results .wizard > span {
 	font-weight: bold;
 }

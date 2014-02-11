@@ -14,7 +14,7 @@ $(function(){
 	$el.find("button.restart").click(restart);
 	$(window).on('hashchange', init);
 	
-	initCharts();
+	Charts.init();
 	init();
 				
 	var auto24url;
@@ -24,8 +24,9 @@ $(function(){
 		
 		if (location.hash) {
 			make = location.hash.substring(1, location.hash.indexOf("/"));
-			makeId = $el.find(".form select option:contains("+make+")").val();
+			makeId = $el.find(".form select option:contains("+make+")").attr("selected", "selected").val();
 			model = location.hash.substring(location.hash.indexOf("/")+1);
+			$el.find("form input.model").val(model);
 		}
 			
 		reset();
@@ -36,8 +37,9 @@ $(function(){
 		} else {
 			//reset to form
 			setState(states.FORM);
-			updateLastSearch();
 		}
+
+		updateLastSearch();
 	}
 	
 	function restart() {
@@ -46,15 +48,7 @@ $(function(){
 	
 	function reset() {
 		Averages.reset();
-		
-		$el.find('.chart').each(function(){
-			var chart = $(this).highcharts();
-			chart.setTitle({text:""});
-			
-			for (var i=0; i < chart.series.length; i++) {
-				chart.series[i].setData([]);
-			};
-		});
+		Charts.reset();
 	}				
 	
 	/*
@@ -158,15 +152,15 @@ $(function(){
 		Averages.update(results);
 
 		Wizard.setResults(results, car);
-		
+
 		//update charts
+		Charts.updateSearch(auto24url, car);
+
 		var priceChart = $('.priceByYear').highcharts();
 		displayResults(priceChart, results, "price");
-		priceChart.setTitle({text: "Kasutatud "+car+ " hind auto registreerimise aasta kohta"});
 
 		var odoChart = $('.odoByYear').highcharts();
 		displayResults(odoChart, results, "odo");
-		odoChart.setTitle({text: "Kasutatud "+car+ " läbisõit auto registreerimise aasta kohta"});
 		
 		//handle paging
 		handlePaging(html, url, model);
@@ -203,143 +197,5 @@ $(function(){
 		avgSeries.setData(Averages.getAverages(field));
 		
 		chart.redraw()
-	}
-	
-	function initCharts() {
-		$el.find('.priceByYear').highcharts({
-			chart: {},
-			xAxis: {
-				title: {
-					text: 'auto registreerimise aasta'
-				},
-				labels: {
-					format: '{value}'
-				},
-				tickInterval: 1,
-				reversed: true,
-			},
-			yAxis: {
-				min: 0,
-				title: {
-					text: 'hind'
-				},
-				labels: {
-					format: '{value:,.0f} €'
-				}
-			},
-			title: {
-				text: ''
-			},
-			series: [{
-				type: 'scatter',
-				name: 'hind',
-				data: [],
-				marker: {
-					radius: 4
-				}
-			},{
-				type: 'line',
-				name: 'Keskmine hind',
-				marker: {
-					radius: 10
-				},
-				data: [],
-			}],
-			tooltip: {
-				useHTML: true,
-				hideDelay: 1500,
-				formatter: function() {
-					if (this.point.result) {
-						return resultTooltip(this.point.result);
-					} else {
-						return 'Aasta ' + this.point.x + ' autode(' + this.point.count + 'tk)<br /> keskmine hind: <b>' + Highcharts.numberFormat(this.point.y,0,0," ") + '€</b>';
-					}
-				}
-			},
-			//prevent tooltip moving with mouse
-			plotOptions: { 
-				scatter:{ tooltip:{ followPointer: false }},
-				series:{ cursor: 'pointer', point: { events: {click: resultClick}}}
-			}
-		});
-		
-		$el.find('.odoByYear').highcharts({
-			chart: {},
-			xAxis: {
-				title: {
-					text: 'aasta'
-				},
-				labels: {
-					format: '{value}'
-				},
-				tickInterval: 1,
-				reversed: true,
-			},
-			yAxis: {
-				min: 0,
-				title: {
-					text: 'läbisõit'
-				},
-				labels: {
-					format: '{value:,.0f} km'
-				}
-			},
-			title: {
-				text: ''
-			},
-			series: [{
-				type: 'scatter',
-				name: 'odometer',
-				data: [],
-				marker: {
-					radius: 4
-				}
-			},{
-				type: 'line',
-				name: 'Keskmine läbisõit',
-				marker: {
-					radius: 10
-				},
-				data: [],
-			}],
-			tooltip: {
-				useHTML: true,
-				hideDelay: 1500,
-				formatter: function() {
-					if (this.point.result) {
-						return resultTooltip(this.point.result);
-					} else {
-						return 'Aasta ' + this.point.x + ' autode(' + this.point.count + 'tk)<br /> keskmine läbisõit: <b>' + Highcharts.numberFormat(this.point.y,0,0," ") + 'km</b>';
-					}
-				}
-			},
-			//prevent tooltip moving with mouse
-			plotOptions: { 
-				scatter:{ tooltip:{ followPointer: false }},
-				series:{ cursor: 'pointer', point: { events: {click: resultClick}}}
-			}
-		});
-		
-		function resultClick() {
-			if (this.result) { 
-				//point
-				window.open(this.result.url, "_blank");
-			} else {
-				//average
-				var url = auto24url + "&f1=" + this.x + "&f2=" + this.x + "&ak=0";
-				window.open(url, "_blank");
-			}
-		};
-		
-		//console.log(r.odo+", "+r.year+", "+r.price+", "+r.name);
-		function resultTooltip(result) {
-			var tooltip = '<b><a href="' + result.url + '" target="_blank" style="max-width: 200px;">'+result.name+"</a></b><br />" +
-			(result.img ? '<img src="' + result.img + '" style="width:74px;height:56px;border:1px solid"/><br />': "") +
-			'Läbisõit: ' + Highcharts.numberFormat(result.odo,0,0," ") + 'km<br />' +
-			'Aasta: ' + result.year + '<br />' +
-			'Hind: ' + Highcharts.numberFormat(result.price,0,0," ") + '€<br />';
-			
-			return tooltip;
-		}
 	}
 })
