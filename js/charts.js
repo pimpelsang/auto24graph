@@ -1,7 +1,6 @@
 var Charts = (function() {
 	var $el;
 	var auto24url;
-	var carName;
 	
 	function init() {
 		$el = $("#auto24graph");
@@ -13,7 +12,10 @@ var Charts = (function() {
 					text: 'auto registreerimise aasta'
 				},
 				labels: {
-					format: '{value}'
+					format: '{value}',
+					style: {
+						fontWeight: 'bold'
+					}
 				},
 				tickInterval: 1,
 				reversed: true,
@@ -39,6 +41,7 @@ var Charts = (function() {
 				}
 			},{
 				type: 'line',
+				color: 'rgba(0,0,0,.5)',
 				name: 'Keskmine hind',
 				marker: {
 					radius: 10
@@ -67,10 +70,13 @@ var Charts = (function() {
 			chart: {},
 			xAxis: {
 				title: {
-					text: 'aasta'
+					text: 'auto registreerimise aasta'
 				},
 				labels: {
-					format: '{value}'
+					format: '{value}',
+					style: {
+						fontWeight: 'bold'
+					}
 				},
 				tickInterval: 1,
 				reversed: true,
@@ -97,6 +103,7 @@ var Charts = (function() {
 			},{
 				type: 'line',
 				name: 'Keskmine läbisõit',
+				color: 'rgba(0,0,0,.5)',
 				marker: {
 					radius: 10
 				},
@@ -145,14 +152,9 @@ var Charts = (function() {
 
 	function updateSearch(url, car) {
 		auto24url = url;
-		carName = car;
 		
-		$el.find("h2.price").text("Hind registreerimise aasta kohta");
-		$el.find("h2.odo").text("Läbisõit registreerimise aasta kohta");
-		$el.find("h1").text(carName + " ülevaade");
-
-		//priceChart.setTitle({text: });
-		//odoChart.setTitle({text: "K});
+		//proper templating
+		$el.find("span.car").text(car);
 	}
 	
 	function reset() {

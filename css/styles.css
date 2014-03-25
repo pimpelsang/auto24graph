@@ -9,9 +9,16 @@
 }
 
 #auto24graph .description,
-#auto24graph .header,
-#auto24graph .progress {
+#auto24graph .header {
 	display: none;
+}
+
+#auto24graph .progress {
+	visibility: hidden;
+}
+
+#auto24graph.RESULTS .progress-bar {
+	width: 0% !important;
 }
 
 #auto24graph {
@@ -49,6 +56,10 @@
 	background-color: #FFF;
 	margin: 5px;
 	padding: 50px 80px;
+}
+
+#auto24graph .results H1 {
+	margin-bottom: 30px;
 }
 
 #auto24graph .results H2 {

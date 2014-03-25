@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Eesti autoturu ülevaade</title>
+	<title>Leia auto hinnalangus</title>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -49,7 +49,7 @@
 			<div class="form col-xs-12 col-md-3 hidden-print">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h3 class="panel-title">Leia auto hinnalangus</h3>
+						<h3 class="panel-title"><a href="index.html">Leia auto hinnalangus</a></h3>
 					</div>
 					<div class="panel-body">
 						<form role="form">
@@ -89,23 +89,17 @@
 					Valikusse on jäänud kaks autot: VW Touraeg ja Honda CRV.</p>
 				<br />
 				
-				<p>Kasutades turu ülevaadet näed, et...</p>
+				<p>Kasutades seda lehekülge näed, et...</p>
 				<p>
-					<b>VW Touraeg</b> (2011 aasta auto) maksab <b>44 tuhat</b> eurot ja 4 aasta pärast müües on keskmine hind <b>16 tuhat </b>eurot.<br>
+					<b><a href="#Volkswagen/Touareg">Volkswagen Touareg</a></b> (2011 aasta auto) maksab <b>42 tuhat</b> eurot ja 4 aasta pärast müües on keskmine hind <b>16 tuhat </b>eurot.<br>
 				</p>
 				<p>
-					<b>Honda CRV</b> (2011 aasta auto) ostes maksad <b>19 tuhat </b> eurot ja müües saaksid umbes <b>12 tuhat</b> eurot tagasi!
+					<b><a href="#Honda/CRV">Honda CRV</a></b> (2011 aasta auto) ostes maksad <b>19 tuhat </b> eurot ja müües saaksid umbes <b>12 tuhat</b> eurot tagasi!
 				</p>
 				<div class="well well-lg" style="margin: 30px 0px;">
 					Honda CRV hoiab väärtust hästi, VW Touraegi hind turul aga langeb 4 aastaga üle 20 tuhande euro!
 				</div>
 				<hr>
-				
-				<h4>Näites kasutatud autode päringud:</h4>
-				<ul>
-					<li><a href="#Volkswagen/Touareg">Volkswagen Touareg</a></li>
-					<li><a href="#Honda/CRV">Honda CRV</a></li>
-				</ul>
 			</div>
 			
 			<!--
@@ -117,24 +111,22 @@
 				/><button class="startUrl">start</button>
 			</div>
 			-->
-			
-			<div class="progress progress-striped active">
-			  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-				<span class="sr-only">60% Complete</span>
-			  </div>
-			</div>
-			
 			<div class="results col-xs-12 col-md-12">
-				<h1></h1>
-				
+				<div class="progress progress-striped active">
+				  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+					<span class="sr-only">% Complete</span>
+				  </div>
+				</div>
+			
+				<h1>Autoturu ülevaade: <span class="car"></span></h1>
 				<div class="wizard well well-lg">
-					Kui ostad täna <span class="car"></span>, mis on toodetud aastal <input class="regYears" size="4" value="2010" /> ja kasutad seda <input class="useYears" size="2" value="4" /> aastat, <br />
-					on sul kohe vaja <span class="buyPrice">?</span>€ ja <span class="keepYears">4</span> aasta pärast müües saad <span class="sellPrice">?</span>€ tagasi. <br />
+					Kui ostad täna auto, mis on toodetud aastal <input class="regYears" size="4" value="2011" /> ja kasutad seda <input class="useYears" size="2" value="4" /> aastat, <br />
+					on sul hetkel vaja umbes <span class="buyPrice">?</span>€ ja <span class="keepYears">4</span> aasta pärast müües saad umbes <span class="sellPrice">?</span>€ tagasi. <br />
 					(<span class="keptPercentage"></span>% algsummast, hinnalangus <span class="devalueMonth"></span>€ kuus)
 				</div>
-				<h2 class="price"></h2>
+				<h2 class="price"><span class="car"></span> hind</h2>
 				<div class="chart priceByYear"></div>
-				<h2 class="odo"></h2>
+				<h2 class="odo"><span class="car"></span> läbisõit</h2>
 				<div class="chart odoByYear"></div>
 			</div>
 		</div>

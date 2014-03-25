@@ -33,6 +33,10 @@ $(function(){
 		if (makeId && model) {
 			//start search
 			var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0";
+			
+			setProgress(0.1);
+			Charts.updateSearch("", make+" "+model);
+			
 			loadUrl(url, model);
 		} else {
 			//reset to form
@@ -61,8 +65,6 @@ $(function(){
 	
 	function analyzeModel(){
 		reset();
-		
-		debugger;
 
 		var make = $el.find("form select.make option:selected").text();
 		var model = $el.find("form input.model").val();
@@ -171,11 +173,19 @@ $(function(){
 		if (rangeInfo.end < rangeInfo.total) {
 			url += "&ak="+rangeInfo.end;
 			loadUrl(url, model);
+			
+			setProgress(rangeInfo.end / rangeInfo.total);
 		} else {
-			setState(states.RESULTS);
+			setProgress(1);
+			setTimeout(function() {
+				setState(states.RESULTS)
+			}, 500);
 		}
 	}
 	
+	function setProgress(ratio) {
+		$(".progress-bar").css("width", Math.round(ratio*100)+"%");
+	}
 
 	function displayResults(chart, results, field) {
 		console.log("displaying results ", results.length);

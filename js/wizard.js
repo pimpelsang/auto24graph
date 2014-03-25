@@ -18,10 +18,13 @@ var Wizard = (function() {
 		var sellYear = currentYear + keepYears;
 		var devalueMonth = Math.round((buyPrice - sellPrice) / (keepYears*12));
 		
+		var buyPriceRounded = Math.round(buyPrice/100)*100;
+		var sellPriceRounded = Math.round(sellPrice/100)*100;
+		
 		$(".wizard > .car").text(car);
-		$(".wizard > .buyPrice").text(buyPrice || "?");
+		$(".wizard > .buyPrice").text(buyPriceRounded || "?");
 		$(".wizard > .keepYears").text(keepYears);
-		$(".wizard > .sellPrice").text(sellPrice  || "?");
+		$(".wizard > .sellPrice").text(sellPriceRounded  || "?");
 		$(".wizard > .keptPercentage").text(keptPercentage || "?");
 		$(".wizard > .devalueMonth").text(devalueMonth || "?");
 	}
