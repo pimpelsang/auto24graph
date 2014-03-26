@@ -5,6 +5,8 @@ $(function(){
 		RESULTS:"RESULTS"
 	};
 	
+	var state;
+	
 	//main container
 	var $el = $("#auto24graph");
 
@@ -24,7 +26,7 @@ $(function(){
 		
 		if (location.hash) {
 			make = location.hash.substring(1, location.hash.indexOf("/"));
-			makeId = $el.find(".form select option:contains("+make+")").attr("selected", "selected").val();
+			makeId = $el.find("form select option:contains("+make+")").attr("selected", "selected").val();
 			model = location.hash.substring(location.hash.indexOf("/")+1);
 			$el.find("form input.model").val(model);
 		}
@@ -34,8 +36,12 @@ $(function(){
 			//start search
 			var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0";
 			
+			setProgress(0);
 			setProgress(0.1);
 			Charts.updateSearch("", make+" "+model);
+			
+			$("body").trigger("click");
+			window.scrollTo(0,0);
 			
 			loadUrl(url, model);
 		} else {
@@ -65,9 +71,10 @@ $(function(){
 	
 	function analyzeModel(e){
 		reset();
-
-		var make = $el.find("form select.make option:selected").text();
-		var model = $el.find("form input.model").val();
+		var $form = (state == states.FORM) ? $el.find("form.static") : $el.find("form.dropdown");
+		
+		var make = $form.find("select.make option:selected").text();
+		var model = $form.find("input.model").val();
 		
 		if (make && model) {
 			addLastSearch(make, model);
@@ -79,9 +86,12 @@ $(function(){
 		return false;
 	}
 	
-	function setState(state) {
-		$el.attr("class", state);
+	function setState(value) {
+		state = value;
+		$el.attr("class", value);
 	}
+	
+	
 	
 	function updateLastSearch() {
 		var $lastDiv = $el.find(".lastSearched ul").hide();

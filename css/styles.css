@@ -1,15 +1,20 @@
 /* states to UI elements */
 #auto24graph.FORM .description,
 #auto24graph.FORM .header,
+#auto24graph.FORM .form,
 #auto24graph.BUSY .progress,
 #auto24graph.BUSY .results,
-#auto24graph.RESULTS .results {
+#auto24graph.RESULTS .results,
+#auto24graph.BUSY .navbar,
+#auto24graph.RESULTS .navbar {
 	display: block;
 	visibility: visible;
 }
 
 #auto24graph .description,
-#auto24graph .header {
+#auto24graph .header,
+#auto24graph .navbar,
+#auto24graph .form {
 	display: none;
 }
 
@@ -25,21 +30,11 @@
 	background-color: #FEFEFE;
 }
 
-#auto24graph:not(.FORM) .form {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	max-width: 250px;
-	z-index: 2;
-	
-	opacity: 0.5;
-	transition: opacity .3s;
-}
-#auto24graph:not(.FORM) .form:hover {
-	opacity: 1;
+#auto24graph:not(.FORM) >.container{
+	margin-top: 65px;
 }
 
-#auto24graph .form .lastSearched > ul > li {
+#auto24graph form .lastSearched > ul > li {
 	margin-left: -15px;
 }
 
@@ -52,6 +47,7 @@
 	background-position:center; 
 }
 #auto24graph .progress {
+	margin-bottom: 10px;
 }
 
 #auto24graph.FORM .results {
@@ -68,7 +64,7 @@
 }
 
 #auto24graph .results H1 {
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 #auto24graph .results H2 {
@@ -94,6 +90,8 @@
 	background-color: white;
 	font-weight: bold;
 	font-size: 20px;
+	height: 40px;
+	line-height: 40px;
 	text-align: center;
 }
 
