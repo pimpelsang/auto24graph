@@ -63,7 +63,7 @@ $(function(){
 	}
 	*/
 	
-	function analyzeModel(){
+	function analyzeModel(e){
 		reset();
 
 		var make = $el.find("form select.make option:selected").text();
@@ -75,6 +75,8 @@ $(function(){
 			//which saves history and also triggers init()
 			location.hash = "#"+make+"/"+model;
 		}
+		
+		return false;
 	}
 	
 	function setState(state) {
@@ -82,7 +84,7 @@ $(function(){
 	}
 	
 	function updateLastSearch() {
-		var $lastDiv = $el.find(".lastSearched").hide();
+		var $lastDiv = $el.find(".lastSearched ul").hide();
 		$lastDiv.find("li").remove();
 		
 		var list = getCookie("last").split("&");

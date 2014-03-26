@@ -39,6 +39,10 @@
 	opacity: 1;
 }
 
+#auto24graph .form .lastSearched > ul > li {
+	margin-left: -15px;
+}
+
 #auto24graph .header {
 	margin-bottom: 5px;
 	width: 100%; 
@@ -48,6 +52,11 @@
 	background-position:center; 
 }
 #auto24graph .progress {
+}
+
+#auto24graph.FORM .results {
+	height: 10px;
+	overflow: hidden;
 }
 
 #auto24graph .results {
@@ -82,7 +91,7 @@
 }
 
 #auto24graph .results .wizard > input {
-	background-color: transparent;
+	background-color: white;
 	font-weight: bold;
 	font-size: 20px;
 	text-align: center;
