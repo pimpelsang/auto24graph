@@ -17,52 +17,57 @@
 	<script src="js/auto24parser.js"></script>
 	<script src="js/charts.js"></script>
 	<script src="js/script.js"></script>
+	
 </head>
 <body id="auto24graph">
 	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-		<div class="container">
-		  <div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-			  <span class="sr-only">Toggle navigation</span>
-			  <span class="icon-bar"></span>
-			  <span class="icon-bar"></span>
-			  <span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="#">Leia auto hinnalangus</a>
-		  </div>
-
-		  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li class="dropdown" style="min-width: 200px">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">uus päring<b class="caret"></b></a>
-				  <ul class="dropdown-menu" style="width:100%; padding: 10px;">
-					<form role="form" class="dropdown">
-						<div class="form-group">
-							<label for="makeSelect">Vali auto mark</label>
-							<select class="make form-control" id="makeSelect">
-								<option value="9">Alfa Romeo</option><option value="149">Aston Martin</option><option value="2">Audi</option><option value="4">BMW</option><option value="31">Chevrolet</option><option value="28">Chrysler</option><option value="20">Citroen</option><option value="254">Dacia</option><option value="68">Daewoo</option><option value="14">Fiat</option><option value="7" selected>Ford</option><option value="1">Honda</option><option value="193">Hummer</option><option value="34">Hyundai</option><option value="36">Jaguar</option><option value="32">Jeep</option><option value="25">Kia</option><option value="18">Lada</option><option value="37">Lancia</option><option value="42">Land Rover</option><option value="35">Lexus</option><option value="6">Mazda</option><option value="12">Mercedes-Benz</option><option value="144">MINI</option><option value="3">Mitsubishi</option><option value="11">Nissan</option><option value="5">Opel</option><option value="16">Peugeot</option><option value="140">Porsche</option><option value="19">Renault</option><option value="17">Saab</option><option value="22">SEAT</option><option value="40">Skoda</option><option value="102">Smart</option><option value="23">Subaru</option><option value="41">Suzuki</option><option value="13">Toyota</option><option value="8">Volkswagen</option><option value="10">Volvo</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="modelInput">ja kirjuta mudel</label>
-							<input class="model form-control" id="modelInput" placeholder="Mondeo näiteks">
-						</div>
-						<button class="btn btn-primary btn-lg" type="submit">Start</button>
-						
-						<div class="lastSearched form-group">
-							<hr />	
-							<label>Eelmised päringud:</label>
-							<ul></ul>
-						</div>
-					</form>
-				  </ul>
-				</li>
-			</ul>
-		  </div>
+	<div class="container">
+	  <div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		  <span class="sr-only">Toggle navigation</span>
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		  <span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">Leia auto hinnalangus</a>
 	  </div>
-	</nav>
+
+	  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<ul class="nav navbar-nav">
+			<li class="dropdown" style="min-width: 200px">
+			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">uus päring<b class="caret"></b></a>
+			  <ul class="dropdown-menu" style="width:100%; padding: 10px;">
+				<form role="form" class="dropdown">
+					<div class="form-group">
+						<label for="makeSelect">Vali auto mark</label>
+						<select class="make form-control" id="makeSelect">
+							<option value="9">Alfa Romeo</option><option value="149">Aston Martin</option><option value="2">Audi</option><option value="4">BMW</option><option value="31">Chevrolet</option><option value="28">Chrysler</option><option value="20">Citroen</option><option value="254">Dacia</option><option value="68">Daewoo</option><option value="14">Fiat</option><option value="7" selected>Ford</option><option value="1">Honda</option><option value="193">Hummer</option><option value="34">Hyundai</option><option value="36">Jaguar</option><option value="32">Jeep</option><option value="25">Kia</option><option value="18">Lada</option><option value="37">Lancia</option><option value="42">Land Rover</option><option value="35">Lexus</option><option value="6">Mazda</option><option value="12">Mercedes-Benz</option><option value="144">MINI</option><option value="3">Mitsubishi</option><option value="11">Nissan</option><option value="5">Opel</option><option value="16">Peugeot</option><option value="140">Porsche</option><option value="19">Renault</option><option value="17">Saab</option><option value="22">SEAT</option><option value="40">Skoda</option><option value="102">Smart</option><option value="23">Subaru</option><option value="41">Suzuki</option><option value="13">Toyota</option><option value="8">Volkswagen</option><option value="10">Volvo</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="modelInput">ja kirjuta mudel</label>
+						<input class="model form-control" id="modelInput" placeholder="Mondeo näiteks">
+					</div>
+					<button class="btn btn-primary btn-lg" type="submit">Start</button>
+					
+					<div class="lastSearched form-group">
+						<hr />	
+						<label>Eelmised päringud:</label>
+						<ul></ul>
+					</div>
+				</form>
+			  </ul>
+			</li>
+		</ul>
+	  </div>
+  </div>
+</nav>
 
 	<div class="container">
+		<div class="browser alert alert-danger hidden" style="margin:10px">
+		  <strong>Hoiatus!</strong> Sinu internetilehitseja ei ole teotatud. Soovitame kasutada <a href="http://www.google.com/chrome/" class="alert-link">Google Chrome</a>!
+		</div>
+		
 		<div class="header"></div>
 	  
 		<div class="row">

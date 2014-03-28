@@ -10,7 +10,6 @@ $(function(){
 	//main container
 	var $el = $("#auto24graph");
 
-
 	//$el.find("form button").click(analyzeUrl);
 	$el.find("form button").click(analyzeModel);
 	$el.find("button.restart").click(restart);
@@ -18,13 +17,19 @@ $(function(){
 	
 	Charts.init();
 	init();
+	
+	//browser detection
+	if ((window.attachEvent && !window.addEventListener) || !('withCredentials' in new XMLHttpRequest())) {
+		$(".browser.alert").removeClass("hidden");
+	}
 				
 	var auto24url;
 	
 	function init() {
 		var make, makeId, model;
-		
-		if (location.hash) {
+		var validSearchUrl = new RegExp("#.+/.+");
+
+		if (validSearchUrl.test(location.hash)) {
 			make = location.hash.substring(1, location.hash.indexOf("/"));
 			makeId = $el.find("form select option:contains("+make+")").attr("selected", "selected").val();
 			model = location.hash.substring(location.hash.indexOf("/")+1);
@@ -36,7 +41,6 @@ $(function(){
 			//start search
 			var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0";
 			
-			setProgress(0);
 			setProgress(0.1);
 			Charts.updateSearch("", make+" "+model);
 			
@@ -191,7 +195,8 @@ $(function(){
 			setProgress(1);
 			setTimeout(function() {
 				setState(states.RESULTS)
-			}, 500);
+				setProgress(0);
+			}, 600);
 		}
 	}
 	
