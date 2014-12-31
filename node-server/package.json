@@ -1,0 +1,12 @@
+{
+  "name": "node-server",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "author": "",
+  "license": "mit",
+  "dependencies": {
+    "express": "^4.10.6",
+    "request": "^2.51.0"
+  }
+}

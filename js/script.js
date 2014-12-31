@@ -134,6 +134,7 @@ $(function(){
 	
 	function loadUrl(url, model) {
 		console.log("Loading auto24 url", url);
+
 		if (url.indexOf("www.auto24.ee/kasutatud/nimekiri.php") == -1) {
 			return alert( "url isn't www.auto24.ee/kasutatud/nimekiri.php...");
 		}
@@ -141,22 +142,19 @@ $(function(){
 		auto24url = url;
 		
 		setState(states.BUSY);
+
+		// var x = new XMLHttpRequest();
+		// x.open('GET', "http://cors-anywhere.herokuapp.com/" + url);
+		// x.onload = function() {
+		// 	onResultHtmlLoaded(x.responseText, url, model);
+		// }
+		// x.send();
 		
-		//console.log("http://whateverorigin.org:"+url);
-		//$.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data){
-		//	onResultHtmlLoaded(data.contents, url, model);
-		//});
-		//console.log('http://anyorigin.com/get/?url=' + escape(url) + '&callback=?');
-		//$.getJSON('http://anyorigin.com/get/?url=' + escape(url) + '&callback=?', function(data){
-		//	onResultHtmlLoaded(data.contents, url, model);
-		//});
-		
-		var x = new XMLHttpRequest();
-		x.open('GET', "http://cors-anywhere.herokuapp.com/" + url);
-		x.onload = function() {
-			onResultHtmlLoaded(x.responseText, url, model);
-		}
-		x.send();
+		$.get( "/auto/", {
+			search: url.replace('http://www.auto24.ee/kasutatud/nimekiri.php?', '')
+		}, function(response) {
+			onResultHtmlLoaded(response, url, model);
+		});
 	}
 	
 	function onResultHtmlLoaded(html, url, model) {
