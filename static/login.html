@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Leia auto hinnalangus</title>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+	.header {
+		margin-bottom: 25px;
+		width: 100%; 
+		height: 240px; 
+		background-image:url('http://www.carsmoveus.com/wp-content/uploads/2011/07/BBSRSLOL-1.jpg'); 
+		background-size: cover;
+		background-position:center; 
+	}
+	</style>
+</head>
+<body id="auto24graph">
+	<div class="header"></div>
+	<form class="form-inline" style="position:absolute; left:50%; margin-left:-110px">
+		<div class="form-group">
+			<input id="pwd" class="form-control" placeholder="Parooliks autori nimi:">
+		</div>
+		<button class="btn btn-default" type="submit" onclick="
+		document.cookie='pwd='+document.getElementById('pwd').value+'; expires=Fri, 3 Aug 2020 20:47:11 UTC; path=/'">ok</button>
+	</form>
+</body>
+</html>
