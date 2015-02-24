@@ -55,7 +55,7 @@ var Auto24Parser = (function() {
 			var rowHtml = html.substring(start, end+5);
 			
 			var result = parseTableRow(rowHtml);
-			if (result.odo && result.year && result.price) {
+			if (result.year && result.price) {
 				results.push(result);
 				console.log("add row:", result);
 			} else {
