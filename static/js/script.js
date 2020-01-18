@@ -30,8 +30,8 @@ $(function(){
 		var validSearchUrl = new RegExp("#.+/.+");
 
 		if (validSearchUrl.test(location.hash)) {
-			make = location.hash.substring(1, location.hash.indexOf("/"));
-			makeId = $el.find("form select option:contains("+unescape(make)+")").attr("selected", "selected").val();
+			make = unescape(location.hash.substring(1, location.hash.indexOf("/")));
+			makeId = $el.find("form select option:contains("+make+")").attr("selected", "selected").val();
 			model = unescape(location.hash.substring(location.hash.indexOf("/")+1));
 			$el.find("form input.model").val(model);
 		}
