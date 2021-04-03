@@ -39,8 +39,8 @@ $(function(){
 		reset();
 		if (makeId && model) {
 			//start search
-			var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&bi=EUR&ab=0&ae=2&af=200&ag=1&otsi=otsi&ak=0";
-			
+			var url = "http://www.auto24.ee/kasutatud/nimekiri.php?bn=2&b="+makeId+"&c="+model+"&ae=2&af=200&ag=1";
+
 			setProgress(0.1);
 			Charts.updateSearch("", make+" "+model);
 			

@@ -4,13 +4,12 @@ var Auto24Parser = (function() {
 	}
 	
 	function getRangeInfo(html) {
-		var range = between(html, 'tan </span><span class="item">', "</span>", -1).split("&ndash;");
+		debugger;
+		var total = 1*between(html, "Kokku: <strong>", "</strong>", -1);
+		var endStr = between(html, 'class="current-range">', "</div>", -1);
+		var end = 200*endStr.match("\(([0-9]+)/.*\)")[2]
 
-		return {
-			start: 	1*range[0],
-			end: 	1*range[1],
-			total: 	1*between(html, "Kokku <strong>", "</strong>", -1),
-		}
+		return { end, total }
 	}
 	
 	//helper
@@ -29,7 +28,7 @@ var Auto24Parser = (function() {
 			return;
 		}
 		
-		var start = html.indexOf("<table id=\"usedVehiclesSearchResult");
+		var start = html.indexOf("<div id=\"usedVehiclesSearchResult-flex");
 		var end = html.indexOf("<div class=\"paginator", start);
 		if (start < 0 || end < 0) {
 			alert("auto24.ee lehelt tulemusi ei leitud");
@@ -45,39 +44,28 @@ var Auto24Parser = (function() {
 	function parseTableHtml(html) {
 		var results = [];
 		
-		while(true) {
-			var start = html.indexOf("<tr class=\"result-row")
-			var end = html.indexOf("</tr>", start);
-			if (start < 0 || end < 0) {
-				break;
-			}
-			
-			var rowHtml = html.substring(start, end+5);
-			
-			var result = parseTableRow(rowHtml);
+		var $rows = $(html).find("div.result-row");
+		$rows.each((i, row) => {
+			var result = parseTableRow($(row));
+
 			if (result.year && result.price) {
 				results.push(result);
 				console.log("add row:", result);
 			} else {
 				console.log("Filtered out non filled row:", result);
 			}
-
-			html = html.substring(end+5);
-		}
+		});
 		
 		return results;
 	}
 	
-	function parseTableRow(html) {
-		var $row = $(html);
-		
-		var name = $row.find("td.make_and_model > a").text();
-		var img = $row.find("td.pictures img").attr("src");
-		var _odoDiv = $row.find("td.make_and_model > .extra")[0];
-		var odo = _odoDiv.childNodes.length && _odoDiv.childNodes[0].data.replace(/km|\s/gi,"");
-		var year = $row.find("td.year").text();
-		var price = $row.find("td.price").text().replace(/\s/gi,"");
-		var url = "http://www.auto24.ee" + $row.find("td.make_and_model > a").attr('href');
+	function parseTableRow($row) {
+		var name = $row.find(".title > a").text();
+		var img = $row.find(".thumb").css("background-image").replace(/^url\(['"](.+)['"]\)/, '$1');
+		var odo = $row.find(".mileage").text().replace(/km|\s/gi,"");
+		var year = $row.find(".year").first().text();
+		var price = $row.find(".price").first().text().replace(/\s/gi,"");
+		var url = "https://www.auto24.ee" + $row.find(".title > a").attr('href');
 
 		return {
 			odo: 	parseInt(odo) || 0,
